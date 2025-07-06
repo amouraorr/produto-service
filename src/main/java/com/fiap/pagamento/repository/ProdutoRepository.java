@@ -1,6 +1,6 @@
-package com.fiap.cliente.repository;
+package com.fiap.pagamento.repository;
 
-import com.fiap.cliente.entity.ProdutoEntity;
+import com.fiap.pagamento.entity.ProdutoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

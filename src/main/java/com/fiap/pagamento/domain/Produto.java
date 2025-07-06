@@ -1,4 +1,4 @@
-package com.fiap.cliente.dto;
+package com.fiap.pagamento.domain;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProdutoDTO {
+public class Produto {
     private Long id;
     private String nome;
     private String sku;
