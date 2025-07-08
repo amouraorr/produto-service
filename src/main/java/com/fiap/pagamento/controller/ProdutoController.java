@@ -8,7 +8,6 @@ import com.fiap.pagamento.usecase.service.BuscarProdutoPorSkuServiceUseCase;
 import com.fiap.pagamento.usecase.service.CadastrarProdutoUseServiceCase;
 import com.fiap.pagamento.usecase.service.ListarProdutosServiceUseCase;
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
