@@ -7,12 +7,16 @@ import com.fiap.produto.usecase.service.AtualizarProdutoServiceUseCase;
 import com.fiap.produto.usecase.service.BuscarProdutoPorSkuServiceUseCase;
 import com.fiap.produto.usecase.service.CadastrarProdutoUseServiceCase;
 import com.fiap.produto.usecase.service.ListarProdutosServiceUseCase;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/produtos")
 @RequiredArgsConstructor
@@ -25,32 +29,43 @@ public class ProdutoController {
     private final ProdutoMapper mapper;
 
     @PostMapping
-    public ProdutoResponseDTO cadastrar(@RequestBody ProdutoRequestDTO dto) {
-        // Endpoint para cadastrar novo produto via REST
+    public ResponseEntity<ProdutoResponseDTO> cadastrar(@Valid @RequestBody ProdutoRequestDTO dto) {
+        log.info("Iniciando cadastro de produto com SKU: {}", dto.getSku());
         var produto = mapper.toDomain(dto);
-        return mapper.toResponseDTO(cadastrarUseCase.execute(produto));
+        var produtoSalvo = cadastrarUseCase.execute(produto);
+        log.info("Produto cadastrado com sucesso, ID: {}", produtoSalvo.getId());
+        return ResponseEntity.ok(mapper.toResponseDTO(produtoSalvo));
     }
 
     @PutMapping("/{id}")
-    public ProdutoResponseDTO atualizar(@PathVariable Long id, @RequestBody ProdutoRequestDTO dto) {
-        // Endpoint para atualizar produto via REST
+    public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto) {
+        log.info("Iniciando atualização do produto ID: {}", id);
         var produto = mapper.toDomain(dto);
         produto.setId(id);
-        return mapper.toResponseDTO(atualizarUseCase.execute(produto));
+        var produtoAtualizado = atualizarUseCase.execute(produto);
+        log.info("Produto atualizado com sucesso, ID: {}", produtoAtualizado.getId());
+        return ResponseEntity.ok(mapper.toResponseDTO(produtoAtualizado));
     }
 
     @GetMapping("/{sku}")
-    public ProdutoResponseDTO buscarPorSku(@PathVariable String sku) {
-        // Endpoint para buscar produto por SKU via REST
-        return buscarPorSkuUseCase.execute(sku)
-                .map(mapper::toResponseDTO)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+    public ResponseEntity<ProdutoResponseDTO> buscarPorSku(@PathVariable String sku) {
+        log.info("Buscando produto por SKU: {}", sku);
+        var produtoOpt = buscarPorSkuUseCase.execute(sku);
+        return produtoOpt.map(produto -> {
+            log.info("Produto encontrado para SKU: {}", sku);
+            return ResponseEntity.ok(mapper.toResponseDTO(produto));
+        }).orElseThrow(() -> {
+            log.warn("Produto não encontrado para SKU: {}", sku);
+            return new IllegalArgumentException("Produto não encontrado para SKU: " + sku);
+        });
     }
 
     @GetMapping
-    public List<ProdutoResponseDTO> listar() {
-        // Endpoint para listar todos os produtos via REST
-        return listarUseCase.execute().stream().map(mapper::toResponseDTO).collect(Collectors.toList());
+    public ResponseEntity<List<ProdutoResponseDTO>> listar() {
+        log.info("Listando todos os produtos");
+        var produtos = listarUseCase.execute().stream().map(mapper::toResponseDTO).collect(Collectors.toList());
+        log.info("Total de produtos encontrados: {}", produtos.size());
+        return ResponseEntity.ok(produtos);
     }
 }
 
