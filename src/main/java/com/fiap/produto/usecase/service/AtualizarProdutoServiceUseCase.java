@@ -12,7 +12,6 @@ public class AtualizarProdutoServiceUseCase {
     private final ProdutoGateway gateway;
 
     public Produto execute(Produto produto) {
-        // Adicionar validações, como garantir que o produto existe antes de atualizar
         return gateway.atualizar(produto);
     }
 }

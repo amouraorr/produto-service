@@ -20,33 +20,28 @@ public class ProdutoGatewayImpl implements ProdutoGateway {
 
     @Override
     public Produto salvar(Produto produto) {
-        // Salva produto no banco de dados
         ProdutoEntity entity = mapper.toEntity(produto);
         return mapper.toDomain(repository.save(entity));
     }
 
     @Override
     public Produto atualizar(Produto produto) {
-        // Atualiza produto no banco de dados
         ProdutoEntity entity = mapper.toEntity(produto);
         return mapper.toDomain(repository.save(entity));
     }
 
     @Override
     public Optional<Produto> buscarPorSku(String sku) {
-        // Busca produto por SKU no banco de dados
         return repository.findBySku(sku).map(mapper::toDomain);
     }
 
     @Override
     public Optional<Produto> buscarPorId(Long id) {
-        // Busca produto por ID no banco de dados
         return repository.findById(id).map(mapper::toDomain);
     }
 
     @Override
     public List<Produto> listarTodos() {
-        // Lista todos os produtos do banco de dados
         return repository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
     }
 }
