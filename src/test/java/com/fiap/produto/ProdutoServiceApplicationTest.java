@@ -17,7 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 		"spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer",
 		"spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer"
 })
-class ProdutoServiceApplicationTests {
+class ProdutoServiceApplicationTest {
 
 	@Test
 	void contextLoads() {
